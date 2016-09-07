@@ -1,4 +1,4 @@
-<h2 class="m_3">MovieCrawler</h2>
+<h2 class="m_3">MovieCrawler <small>A simple omdbAPI search gateway, made with MEAN</small></h2>
 <div class="movie_top">
 
 <!-- Search Form -->
@@ -75,7 +75,7 @@
             <div class="clearfix"> </div>
 
         </div>
-        <form ng-submit="searchMovies()">
+        <form ng-hide="showingFavorites" ng-submit="searchMovies()">
             <button ng-show="more" class="btn btn-info">Load more</button>
         </form>
     </div>

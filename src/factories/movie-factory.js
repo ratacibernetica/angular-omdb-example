@@ -47,6 +47,11 @@ const movieFactory = angular.module('app.movieFactory',[])
 		}
 	}
 
+	function _isID(someString){
+		let regexp = new RegExp(/^tt\d+$/);
+		return regexp.test(someString);
+	}
+
 	function getMovies($scope){
 		$http.get('/movies/list').success(response => {
 			$scope.totalResults = response.movies.length;
@@ -85,7 +90,15 @@ const movieFactory = angular.module('app.movieFactory',[])
 
 		const q = $scope.searchInput;
 		const y = $scope.searchInputYear;
-		$http.get(`/movies/title?q=${q}&y=${y}`)
+
+		if(_isID(q)){ //if q looks like an imdbID
+			$scope.filter = 'i';
+			$state.go('movie', {imdbID: q});
+		}else{
+			$scope.filter = 's';
+			$scope.searchUrl = `/movies/title?q=${q}&y=${y}`;
+		}
+		$http.get($scope.searchUrl )
 		.success(response=>{
 			$scope.movies = response.movies;
 				fetchMovies($scope, ($scope,imdbResponse)=>{
@@ -114,7 +127,7 @@ const movieFactory = angular.module('app.movieFactory',[])
 	function fetchMovies($scope, callback){
 		if(!$scope.searchInput){ return;}
 		if(!$scope.page){$scope.page=1;}
-		$http.get(`http://www.omdbapi.com/?s=${$scope.searchInput}&y=${$scope.searchInputYear}&page=${$scope.page}`)
+		$http.get(`http://www.omdbapi.com/?${$scope.filter}=${$scope.searchInput}&y=${$scope.searchInputYear}&page=${$scope.page}`)
 		.success(response=>{
 			if(response.Response === "True" && response.Search.length){
 				callback($scope,response);
