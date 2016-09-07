@@ -12,8 +12,8 @@
                 {{more ? 'Show me more!': 'Search'}}
             </button>
         </form>
-        <div ng-show="types" ng-repeat="type in types">
-            <label class="checkbox-inline">
+        <div >
+            <label ng-show="types" ng-repeat="type in types" class="checkbox-inline">
                 <input ng-click="includeType(type)" type="checkbox" id="{{type}}" value="{{type}}"> {{type}}
             </label>
         </div>
