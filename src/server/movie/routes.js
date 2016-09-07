@@ -23,14 +23,16 @@ router.post('/updateDetails', function(req, res){
 	var movieDetails = req.body.details;
 
 	if(movieDetails){
-		Movie.findOneAndUpdate({imdbID: movieDetails.imdbID},{ Details: movieDetails}, onUpdate);
+		Movie.findOneAndUpdate({imdbID: movieDetails.imdbID},{ Details: movieDetails},{upsert: true,new: true}, onUpdate);
 
 		function onUpdate(err, doc) {
 		    if (err) {
 		        // TODO: handle error
 		        console.log(err);
 		    } else {
-		    	
+		    	if(!doc.Poster){
+		    		doc.Poster = movieDetails.Poster;
+		    	}
 		    	doc.Details = movieDetails;
 		    	console.log(doc);
 		        console.info('%s successfully updated.',doc.imdbID);

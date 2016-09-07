@@ -17,7 +17,8 @@ var movieDetailsSchema = new Schema({
   Metascore: String,
   imdbRating: String,
   imdbVotes: String,
-  Type: String
+  Type: String,
+  Poster: String
 });
 
 var Movie = mongoose.model('Movie', {

@@ -53,27 +53,5 @@ router.get('/title', function(req, res){
 
 });
 
-// router.get('/:q', function(req, res){
-// 	var q = req.params.q;
-// 	console.log(`searching via parameter ${q}...`);
-// 	Movie.find({Title: new RegExp(q,'i')},function(err, results){
-// 		if(err){ console.log(err); }
-
-// 		res.send({movies: results});
-// 	}).limit(10);		
-
-// });
-
-// router.get('/?q', function(req, res){
-// 	var q = req.query.q;
-// 	console.log(`searching via parameter 2 ${q}...`);
-// 	Movie.find({Title: new RegExp(q,'i')},function(err, results){
-// 		if(err){ console.log(err); }
-
-// 		res.send({movies: results});
-// 	}).limit(10);		
-
-// });
-
 
 module.exports = router;

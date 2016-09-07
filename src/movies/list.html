@@ -9,7 +9,7 @@
             <input class="form-control movies__search-input" placeholder="Search movie by title or imdbID: e.g tt2290065" ng-model="searchInput" ng-pattern="/^[a-zA-Z0-9 ]*$/" />
             <input class="form-control movies__searchyear-input" placeholder="Year (optional)" ng-model="searchInputYear" />
             <button class="btn btn-success movies__search-button">
-                Search
+                {{more ? 'Show me more!': 'Search'}}
             </button>
         </form>
         <div ng-show="types" ng-repeat="type in types">

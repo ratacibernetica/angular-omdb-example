@@ -599,6 +599,11 @@ position: relative;
 margin-bottom: 2em;
 float:right;
 }
+
+.movies__search-input{
+	min-width: 50%;
+}
+
 .search form input[type="text"] {
 padding: 3px 0;
 font-weight:500;
@@ -609,6 +614,7 @@ outline: none;
 width: 76%;
 background: none;
 font-style: italic;
+
 }
 .search form input[type="submit"] {
 background: url('../images/search.png')no-repeat  3px -2px;
