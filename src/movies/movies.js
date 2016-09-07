@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-
-
 export default function($scope, movieFactory, $stateParams, $log, $state){
 	let params = {
 		searchHasChanged: false
