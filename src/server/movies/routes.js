@@ -26,10 +26,11 @@ router.post('/update', function(req, res){
 		    if (err) {
 		        // TODO: handle error
 		        console.log(err);
-		    } 
-	        console.info('%d movies were successfully stored.', docs);
-	        res.send({movies: docs.ops});
-		    
+		        res.status(400);
+				res.send({movies:[]});
+		    } else{
+	        	res.send({movies: docs.ops});	
+		    }
 		}
 	}
 });
@@ -46,7 +47,11 @@ router.get('/title', function(req, res){
 		query.Year = y;
 	}
 	Movie.find(query,function(err, results){
-		if(err){ console.log(err); }
+		if(err){ 
+			console.log(err); 
+			res.status(400);
+			res.send({movies:[]});
+		}
 
 		res.send({movies: results});
 	}).limit(1000);		
