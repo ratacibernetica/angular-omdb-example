@@ -6,7 +6,7 @@ import todosController from 'todos/todos';
 import moviesController from 'movies/movies';
 
 
-const app = angular.module('app',[uiRouter, todoFactory.name, movieFactory.name]);
+const app = angular.module('app',[uiRouter,todoFactory.name, movieFactory.name]);
 
 app.config(($stateProvider, $urlRouterProvider, $locationProvider) => {
 	$urlRouterProvider.otherwise('/movies');
@@ -22,6 +22,11 @@ app.config(($stateProvider, $urlRouterProvider, $locationProvider) => {
 			template: require('about/about.html')
 		})
 		.state('movies', {
+			url: "/movies?q&y&imdbID&page",
+			template: require('movies/list.html'),
+			controller: moviesController
+		})
+		.state('saved', {
 			url: "/movies",
 			template: require('movies/list.html'),
 			controller: moviesController

@@ -1,9 +1,11 @@
 import _ from 'lodash';
 
-export default function($scope, movieFactory, $stateParams){
+export default function($scope, movieFactory, $stateParams, $log, $state){
 	let params = {
-		searchHasInput: false
+		searchHasChanged: false
 	}
+
+	if($state)
 
 	$scope.more = false;
 	$scope.counter = 0;
@@ -15,31 +17,43 @@ export default function($scope, movieFactory, $stateParams){
 			return img;
 		}
 	}
+
 	$scope.$watch('movieDetail', function() {
 	        console.log('hey, movie has changed!');
 	        console.log($scope.movieDetail);
 	    });
+
+	$scope.$watch('searchInput', function() {
+	        console.log('new search...');
+	        $scope.page=1;
+	        $scope.more = false;
+	    });
+
+	$scope.$watch('movies', function() {
+		if($scope.movies && $scope.movies.length){
+	        $scope.totalResults = $scope.movies.length;
+	    	$scope.types = _.uniq(_.map($scope.movies, 'Type'));
+		}
+	    else
+	    	$scope.totalResults = 0;
+	    	$scope.totalRemoteResults = 0;
+	    });
+
 	if($stateParams.imdbID){
 		movieFactory.getMovieDetail($scope,$stateParams.imdbID);
 	}else{
 
-		movieFactory.getMovies($scope);
+		//movieFactory.getMovies($scope);
 
-		// $scope.onCompletedClick = todo => {
-		// 	todo.isCompleted = !todo.isCompleted;
-		// };
+		const { searchMovies, toggleSave } = movieFactory;
 
-		// $scope.onEditClick = todo => {
-		// 	todo.isEditing = true;
-		// 	todo.updatedTask = todo.task;
-		// };
-
-		// $scope.onCancelClick = todo => {
-		// 	todo.isEditing = false;
-		// };
-
-		const { searchMovies } = movieFactory;
-
-		$scope.searchMovies = _.partial(searchMovies, $scope, params);
+		$scope.toggleSave = _.partial(toggleSave, $scope);
+		$scope.searchMovies = _.partial(searchMovies, $scope, $state,params);
+		$scope.searchInput = $stateParams.q;
+		$scope.searchInputYear = $stateParams.y?$stateParams.y:'';
+		$scope.page = $stateParams.page;
+		if($scope.searchInput){
+			$scope.searchMovies();
+		}
 	}
 }

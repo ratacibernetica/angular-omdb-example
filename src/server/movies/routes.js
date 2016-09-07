@@ -10,14 +10,15 @@ router.get('/list', function(req, res){
 		if(err){ console.log(err); }
 
 		res.send({movies: results});
-	}).sort({ Title: 1 });
+	}).limit(50);
 });
 
 
 router.post('/update', function(req, res){
 	console.log('update movies!');
+	console.log(req.body);
 	var newMovies = req.body;
-
+	console.log(newMovies);
 	if(newMovies){
 		Movie.collection.insert(newMovies, onInsert);
 
@@ -26,8 +27,7 @@ router.post('/update', function(req, res){
 		        // TODO: handle error
 		        console.log(err);
 		    } 
-		    
-	        console.info('%d movies were successfully stored.', docs.length);
+	        console.info('%d movies were successfully stored.', docs);
 	        res.send({movies: docs.ops});
 		    
 		}
@@ -37,20 +37,43 @@ router.post('/update', function(req, res){
 /*
 * Search by title
 */
-router.get('/title/:q', function(req, res){
-	var q = req.params.q;
+router.get('/title', function(req, res){
+	const q = req.query.q;
+	const y = req.query.y;
 	console.log(`searching ${q}...`);
-	Movie.find({Title: new RegExp(q,'i')},function(err, results){
+	const query = {Title: new RegExp(q,'i')};
+	if(y){
+		query.Year = y;
+	}
+	Movie.find(query,function(err, results){
 		if(err){ console.log(err); }
 
-		if(!results.length){
-			console.log('no results');
-		}
 		res.send({movies: results});
-	}).
-	sort({ Title: 1 });		
+	}).limit(1000);		
 
 });
+
+// router.get('/:q', function(req, res){
+// 	var q = req.params.q;
+// 	console.log(`searching via parameter ${q}...`);
+// 	Movie.find({Title: new RegExp(q,'i')},function(err, results){
+// 		if(err){ console.log(err); }
+
+// 		res.send({movies: results});
+// 	}).limit(10);		
+
+// });
+
+// router.get('/?q', function(req, res){
+// 	var q = req.query.q;
+// 	console.log(`searching via parameter 2 ${q}...`);
+// 	Movie.find({Title: new RegExp(q,'i')},function(err, results){
+// 		if(err){ console.log(err); }
+
+// 		res.send({movies: results});
+// 	}).limit(10);		
+
+// });
 
 
 module.exports = router;
