@@ -5,26 +5,46 @@ const movieFactory = angular.module('app.movieFactory',[])
 
 .factory('movieFactory', ($http) => {
 
-	function toggleSave($scope,movie){
-		var test = localStorage.getItem('saved');
-		$scope.saved = test ? test : [];
-		$scope.saved  = JSON.parse(test);
-		$scope.saved.push(movie);
-		movie.isSaved = true;
-		localStorage.setItem('saved', JSON.stringify($scope.saved));
 
-		
+
+	function toggleSave($scope,movie){
+		_initSaved($scope);
+		if(!movie.isSaved){
+			movie.isSaved = true;
+			$scope.saved.push(movie);
+		}else{
+			movie.isSaved = false;
+			_.remove($scope.saved, o => { return o.imdbID === movie.imdbID; });
+		}
+		localStorage.setItem('saved', JSON.stringify($scope.saved));
 	}
 
 	function listSaved($scope){
 		_initSaved($scope);
-		console.log('fetching favorites');
 		$scope.movies = $scope.saved;
 	}
 
 	function _initSaved($scope){
-		console.log('init saved');
-		
+		var test = localStorage.getItem('saved');
+		try{
+			$scope.saved  = JSON.parse(test);
+			if(!$scope.saved.length){
+				$scope.saved = [];
+			}
+		}catch(e){
+			$scope.saved = [];
+		}
+	}
+
+	function showFavorites($scope,$state){
+		if(!$scope.showingFavorites){
+			_initSaved($scope);
+			$scope.movies = $scope.saved;
+			$scope.showingFavorites = true;
+		}else{
+			$scope.showingFavorites = false;
+			searchMovies($scope,$state);
+		}
 	}
 
 	function getMovies($scope){
@@ -34,8 +54,8 @@ const movieFactory = angular.module('app.movieFactory',[])
 		});
 	}
 
-	function searchMovies($scope,$state,$params){
-		
+	function searchMovies($scope,$state){
+		_initSaved($scope);
 		if(!$scope.searchInput){ 
 			$scope.page = 1;
 			getMovies($scope);
@@ -44,6 +64,7 @@ const movieFactory = angular.module('app.movieFactory',[])
 
 		$scope.typeIncludes = [];
     
+    	//for filtering by movie.Type
 	    $scope.includeType = function(type) {
 	        var i = _.indexOf($scope.typeIncludes,type);
 	        if (i > -1) {
@@ -62,35 +83,22 @@ const movieFactory = angular.module('app.movieFactory',[])
 	        return movie;
 	    }
 
-		// $scope.searchInput = sanitizer.sanitize(sanitizer.normalizeRCData($scope.searchInput));
 		const q = $scope.searchInput;
 		const y = $scope.searchInputYear;
-		console.time('localsearch');
 		$http.get(`/movies/title?q=${q}&y=${y}`)
 		.success(response=>{
 			$scope.movies = response.movies;
-			// if(!response.movies.length || (response.movies.length && $scope.more)){
-				console.timeEnd('localsearch');
-				console.time('remotesearch');
-				console.log('fetching from omdbapi...');
 				fetchMovies($scope, ($scope,imdbResponse)=>{
 					let newResults = imdbResponse.Search;
-					console.log(`local itemCount ${$scope.movies.length} from ${imdbResponse.totalResults}`);
 					$scope.totalRemoteResults = imdbResponse.totalResults;
-					console.timeEnd('remotesearch');
 					if($scope.movies.length < imdbResponse.totalResults){
-						console.time('inserting');
 						$scope.page = $scope.page+1;
 						$scope.more = true;
 						let newDocs = _.pullAllBy(newResults, $scope.movies ,'imdbID');
-						console.log(newDocs);
 						if(newDocs.length){
-							console.log(`found ${newDocs.length} new movies, adding to local DB`);
 							saveMovies($scope, newDocs);//
-							console.timeEnd('inserting');
 						}else{
-							console.log('no new records found, trying to fetch more...');
-							searchMovies($scope,$state,$params);
+							searchMovies($scope,$state);
 						}
 					}else{
 						$scope.page = 1;
@@ -99,24 +107,23 @@ const movieFactory = angular.module('app.movieFactory',[])
 	    			$state.go('movies', {q: $scope.searchInput, y: $scope.searchInputYear});
 				});
 		}).error(response=>{
-			console.log('could fetch from local database.');
+			return;
 		});
 	}
 
 	function fetchMovies($scope, callback){
 		if(!$scope.searchInput){ return;}
 		if(!$scope.page){$scope.page=1;}
-		console.log(`searchind for "${$scope.searchInput}" at http://www.omdbapi.com/?s=${$scope.searchInput}&y=${$scope.searchInputYear}&page=${$scope.page}`);
 		$http.get(`http://www.omdbapi.com/?s=${$scope.searchInput}&y=${$scope.searchInputYear}&page=${$scope.page}`)
 		.success(response=>{
 			if(response.Response === "True" && response.Search.length){
 				callback($scope,response);
 			}else{
-				console.log('no results from omdbapi, returning local data');
 				$scope.more = false;
 			}
 		}).error(response=>{
 			console.log('could fetch from omdbapi');
+			return;
 		});
 	}
 
@@ -131,13 +138,13 @@ const movieFactory = angular.module('app.movieFactory',[])
 			}
 		}).error(response=>{
 			console.log('could fetch from local.');
+			return;
 		});
 			
 	}
 
 	function fetchMovieDetail($scope, imdbID){
 		if(!imdbID){ return;}
-		console.log(`searching details for "${imdbID}" at http://www.omdbapi.com/?i=${imdbID}&plot=full`);
 			$http.get(`http://www.omdbapi.com/?i=${imdbID}&plot=full`)
 			.success(response=>{
 				if(response.Response === "True"){
@@ -147,7 +154,7 @@ const movieFactory = angular.module('app.movieFactory',[])
 				}
 			})
 			.error(response=>{
-				console.log(response);
+				return;
 			})
 			;
 	}
@@ -168,14 +175,12 @@ const movieFactory = angular.module('app.movieFactory',[])
 		console.log('new movies fetched, saving...');
 		$http.post('/movies/update',newMovies)
 		.success(response=>{
-			console.log('one');
 			if(!$scope.movies.length){
 				$scope.movies = response.movies;
 				
 			}else{
 				$scope.movies = _.unionBy($scope.movies,response.movies,'imdbID');
 			}
-				console.log('two');
 				if($scope.movies && $scope.movies.length)
 					$scope.totalResults = $scope.movies.length;
 			return;
@@ -188,7 +193,8 @@ const movieFactory = angular.module('app.movieFactory',[])
 		fetchMovies,
 		getMovieDetail,
 		toggleSave,
-		listSaved
+		listSaved,
+		showFavorites
 	};
 });
 

@@ -64,6 +64,20 @@ border-top-right-radius: 3px;
 	text-align:center;
 	
 }
+
+.movie__save-movie{
+	position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 16px;
+}
+
+.movie__save-movie:hover,
+.movie__saved{
+	color: #ffa900;
+	cursor: pointer;
+}
+
 .nav ul{
 	padding:0;
 	margin:0;
@@ -866,6 +880,7 @@ width: 50%;
 float: left;
 margin-bottom: 8px;
 height: 188px;
+position: relative;
 }
 .movie-test-left .movie__images {
 float: left;
