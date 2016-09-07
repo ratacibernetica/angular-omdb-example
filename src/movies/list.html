@@ -1,84 +1,107 @@
+<h2 class="m_3">MovieCrawler</h2>
+<div class="movie_top">
 
-<form class="form-inline" ng-submit="searchMovies()">
-	<input 
-		class="form-control movies__search-input" 
-		placeholder="Search movie by title or imdbID: e.g tt2290065" 
-		ng-model="searchInput"
-		ng-pattern="/^[a-zA-Z0-9 ]*$/"
-	/>
-	<input 
-		class="form-control movies__searchyear-input" 
-		placeholder="Year (optional)" 
-		ng-model="searchInputYear"
+<!-- Search Form -->
+    <div class="col-md-12">
+    <label for="showFavsBtn">Only Favorites</label>
+            <input id="showFavsBtn" type="checkbox" ng-click="showFavorites()" ng-checked="showingFavorites"></input>
+        <form ng-hide="showingFavorites" class="form-inline" ng-submit="searchMovies()">
+            <input class="form-control movies__search-input" placeholder="Search movie by title or imdbID: e.g tt2290065" ng-model="searchInput" ng-pattern="/^[a-zA-Z0-9 ]*$/" />
+            <input class="form-control movies__searchyear-input" placeholder="Year (optional)" ng-model="searchInputYear" />
+            <button class="btn btn-success movies__search-button">
+                Search
+            </button>
+        </form>
+        <div ng-show="types" ng-repeat="type in types">
+            <label class="checkbox-inline">
+                <input ng-click="includeType(type)" type="checkbox" id="{{type}}" value="{{type}}"> {{type}}
+            </label>
+        </div>
+    </div>
+<!-- /Search Form -->
 
-	/>
+<!-- Movie Grid -->
+    <div class="col-md-9 movie_box">
 
-	<label for="showFavsBtn">Only Favorites</label>
-	<input id="showFavsBtn" type="checkbox" ng-click="showFavorites()" ng-checked="showingFavorites"></input>
+    <!-- Search Information -->
+        <div class="alert alert-warning" ng-show="!movies.length">No Results</div>
+        <div class="alert alert-info" ng-show="movies.length">
+            <span ng-if="totalResults">Showing <b>{{totalResults}}</b></span>
+            <span ng-if="totalRemoteResults > totalResults"> from <b>{{totalRemoteResults}}</b> </span> 
+            results.
+            </div>
+        <div class="movie movie-test movie-test-dark movie-test-left" ng-repeat="movie in movies | orderBy:'Title' | filter:typeFilter">
 
-	<button 
-		class="btn btn-success movies__search-button">
-		Search
-	</button>
-</form>
+        <!-- Movie Poster -->
+            <div class="movie__images">
+                <a ui-sref="movie({imdbID:movie.imdbID})" class="movie-beta__link">
+                    <img alt="{{movie.Title}}" ng-src="{{checkImage(movie.Poster)}}" class="img-responsive movie__poster" alt="" />
+                </a>
+            </div>
+        <!-- /Movie Poster -->
 
-<div ng-show="types" ng-repeat="type in types">
-	<label class="checkbox-inline">
-	  <input ng-click="includeType(type)" type="checkbox" id="{{type}}" value="{{type}}"> {{type}}
-	</label>
-</div>
-
-
-
-<!-- Movie item -->
-<div class="alert alert-warning" ng-show="!movies.length">No Results</div>
-<div class="alert alert-info" ng-show="movies.length">
- <span ng-if="totalResults"> {{totalResults}}</span>
- <span ng-if="totalRemoteResults.length"> from {{totalRemoteResults}} results.</span> </div>
-<div 
-	class="movie movie-test movie-test-dark movie-test-left" 
-	ng-repeat="movie in movies | orderBy:'Title' | filter:typeFilter">
-
-	<div class="movie__images">
-		<a ui-sref="movie({imdbID:movie.imdbID})" class="movie-beta__link">
-			<img 
-				alt="{{movie.Title}}" 
-				ng-src="{{checkImage(movie.Poster)}}" 
-				class="img-responsive movie__poster" 
-				alt=""
-				/>
-		</a>
-	</div>
-
-	<div class="movie__info">
-		<a 
-			ui-sref="movie({imdbID:movie.imdbID})"
-			class="movie__title">
+            <!-- Movie Details -->
+            <div class="movie__info">
+                <a ui-sref="movie({imdbID:movie.imdbID})" class="movie__title">
 			{{movie.Title}}  
-		</a>
-		
-		<p class="movie__option">
-			{{movie.Year}}
-		</p>
+			</a>
 
-		<ul class="list_6" ng-show="movie.Details">
-			<li><i class="icon2"> </i><p>{{movie.Details.imdbVotes}}</p></li>
-			<li><i class="icon3"> </i><p>{{movie.Details.imdbVotes}}</p></li>
-			<li >Rating : &nbsp;&nbsp;<p>{{movie.Details.imdbRating}}</p></li>
-			<div class="clearfix"> </div>
-		</ul>
-	</div>
+                <p class="movie__option">
+                    {{movie.Year}}
+                </p>
 
-	<span 
-		data-toggle="tooltip" title="Add to favorites" 
-		class="movie__save-movie glyphicon glyphicon-star{{isSaved(movie) ? ' movie__saved' : '-empty'}}" 
-		ng-click="toggleSave(movie)">
-	</span>
+                <ul class="list_6" ng-show="movie.Details">
+                    <li><i class="icon2"> </i>
+                        <p>{{movie.Details.imdbVotes}}</p>
+                    </li>
+                    <li><i class="icon3"> </i>
+                        <p>{{movie.Details.imdbVotes}}</p>
+                    </li>
+                    <li>Rating : &nbsp;&nbsp;
+                        <p>{{movie.Details.imdbRating}}</p>
+                    </li>
+                    <div class="clearfix"> </div>
+                </ul>
+            </div>
+            <!-- /Movie Details -->
 
-	<div class="clearfix"> </div>
+            <!-- Fav Button -->
+            <span data-toggle="tooltip" 
+            	title="Add to favorites" 
+            		class="movie__save-movie glyphicon glyphicon-star{{isSaved(movie) ? ' movie__saved' : '-empty'}}" ng-click="toggleSave(movie)">
+			</span>
+			<!-- /Fav Button -->
 
+            <div class="clearfix"> </div>
+
+        </div>
+        <form ng-submit="searchMovies()">
+            <button ng-show="more" class="btn btn-info">Load more</button>
+        </form>
+    </div>
+
+    <!-- Favorited Movies-->
+    <div class="col-md-3 col-md-3 col-sm-6 col-xs-12" ng-show="saved.length">
+    	<div class="text-center well well-sm">
+    		<span class="glyph-icon glyph-icon-star"></span> 
+    			Your Favorite movies <label class="badge">{{saved.length}}</label></div>
+		<div class="movie_img" ng-repeat="fav in saved">
+			<div class="grid_2">
+				<a ui-sref="movie({imdbID:fav.imdbID})">
+					<img ng-src="{{checkImage(fav.Poster)}}" class="img-responsive" alt="{{fav.Title}}">
+					</a>
+				<div class="caption1">
+						<ul class="list_5 list_7" ng-show="fav.Details">
+				    		<li><i class="icon5"> </i><p>{{fav.Details.imdbVotes}}/p></li>
+				    	</ul>
+				    	<i class="icon4 icon6 icon7"> </i>
+				    	<p class="m_3">{{fav.Title | limitTo: 40}}</p>
+				</div>
+		    </div>
+		   </div>
+                      	  
+    </div>
+    <div class="clearfix"> </div>
+    <!-- Favorited Movies-->
 </div>
-<form ng-submit="searchMovies()">
-	<button ng-show="more" class="btn btn-info">Load more</button>
-</form>
-<!-- /Movie item -->
+<!-- /Movie Grid -->

@@ -20,13 +20,6 @@ var movieDetailsSchema = new Schema({
   Type: String
 });
 
-
-var Todo = mongoose.model('Todo', {
-	task: String,
-	isCompleted: Boolean,
-	isEditing: Boolean
-});
-
 var Movie = mongoose.model('Movie', {
 	imdbID : 
 	{ 
@@ -50,6 +43,4 @@ var Movie = mongoose.model('Movie', {
 	Poster : String,
 	Details: movieDetailsSchema
 });
-
-module.exports.Todo = Todo;
 module.exports.Movie = Movie;

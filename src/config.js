@@ -1,22 +1,15 @@
 import angular from 'angular';
 import uiRouter from 'angular-ui-router';
-import todoFactory from 'factories/todo-factory';
 import movieFactory from 'factories/movie-factory';
-import todosController from 'todos/todos';
 import moviesController from 'movies/movies';
 
 
-const app = angular.module('app',[uiRouter,todoFactory.name, movieFactory.name]);
+const app = angular.module('app',[uiRouter, movieFactory.name]);
 
 app.config(($stateProvider, $urlRouterProvider, $locationProvider) => {
 	$urlRouterProvider.otherwise('/movies');
 
 	$stateProvider
-		.state('todos', {
-			url: '/',
-			template: require('todos/todos.html'),
-			controller: todosController
-		})
 		.state('about', {
 			url: "/about",
 			template: require('about/about.html')
@@ -35,6 +28,10 @@ app.config(($stateProvider, $urlRouterProvider, $locationProvider) => {
 			url: "/movie/:imdbID",
 			template: require('movies/detail.html'),
 			controller: moviesController
+		})
+		.state('404', {
+			url: "/404",
+			template: "<div class='text-center alert alert-warning'>The programmer didn't have time to implement this, sorry :(</div>",
 		})
 		;
 
