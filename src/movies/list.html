@@ -1,0 +1,56 @@
+<form ng-submit="searchMovies()">
+	<input 
+		class="form-control movies__search-input" 
+		placeholder="Search movie by title" 
+		ng-model="searchInput"
+		ng-pattern="/^[a-zA-Z0-9 ]*$/"
+	/>
+	<button 
+		class="btn btn-success movies__search-button">
+		Search
+	</button>
+</form>
+
+<!-- Movie item -->
+<div class="alert alert-warning" ng-show="!movies.length">No Results</div>
+<div class="alert alert-info" ng-show="totalResults">{{totalResults}} results.</div>
+<div 
+	class="movie movie-test movie-test-dark movie-test-left" 
+	ng-repeat="movie in movies">
+
+	<div class="movie__images">
+		<a ui-sref="movie({imdbID:movie.imdbID})" class="movie-beta__link">
+			<img 
+				alt="{{movie.Title}}" 
+				ng-src="{{checkImage(movie.Poster)}}" 
+				class="img-responsive movie__poster" 
+				alt=""
+				/>
+		</a>
+	</div>
+
+	<div class="movie__info">
+		<a 
+			ui-sref="movie({imdbID:movie.imdbID})"
+			class="movie__title">
+			{{movie.Title}}  
+		</a>
+		
+		<p class="movie__option">
+			{{movie.Year}}
+		</p>
+
+		<ul class="list_6" ng-show="movie.Details">
+			<li><i class="icon2"> </i><p>{{movie.Details.imdbVotes}}</p></li>
+			<li><i class="icon3"> </i><p>{{movie.Details.imdbVotes}}</p></li>
+			<li >Rating : &nbsp;&nbsp;<p>{{movie.Details.imdbRating}}</p></li>
+			<div class="clearfix"> </div>
+		</ul>
+	</div>
+
+	<div class="clearfix"> </div>
+</div>
+<form ng-submit="searchMovies()">
+	<button ng-show="more" class="btn btn-info">Load more</button>
+</form>
+<!-- /Movie item -->

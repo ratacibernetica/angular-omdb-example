@@ -1,0 +1,34 @@
+<div class="grid images_3_of_2" >
+   <div class="movie_image">
+    <span class="movie_rating">{{movieDetail.Details.imdbRating}}</span>
+    <img src="{{checkImage(movieDetail.Poster)}}" class="img-responsive" alt=""/>
+</div>
+<div class="movie_rate">
+   <div class="rating_desc"><p>Your Vote :</p></div>
+   <form action="" class="sky-form">
+    <fieldset>					
+     <section>
+       <div class="rating">
+          <input type="radio" name="stars-rating" id="stars-rating-5">
+          <label for="stars-rating-5"><i class="icon-star"></i></label>
+          <input type="radio" name="stars-rating" id="stars-rating-4">
+          <label for="stars-rating-4"><i class="icon-star"></i></label>
+          <input type="radio" name="stars-rating" id="stars-rating-3">
+          <label for="stars-rating-3"><i class="icon-star"></i></label>
+          <input type="radio" name="stars-rating" id="stars-rating-2">
+          <label for="stars-rating-2"><i class="icon-star"></i></label>
+          <input type="radio" name="stars-rating" id="stars-rating-1">
+          <label for="stars-rating-1"><i class="icon-star"></i></label>
+      </div>
+  </section>
+</fieldset>
+</form>
+<div class="clearfix"> </div>
+</div>
+</div>
+<div class="desc1 span_3_of_2" ng-repeat="(key, value) in movieDetail.Details">
+   <p class="movie_option"><strong>{{key}}: </strong><a href="#">{{value}}</a></p>
+    
+   <!-- <div class="down_btn"><a class="btn1" href="#"><span> </span>Download</a></div> -->
+</div>
+<div class="clearfix"> </div>

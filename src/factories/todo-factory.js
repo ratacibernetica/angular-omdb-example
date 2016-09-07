@@ -19,7 +19,7 @@ const todoFactory = angular.module('app.todoFactory',[])
 			isEditing: false
 		}).success(response=>{
 			let title = $scope.createTaskInput;
-			$http.get(`http://www.omdbapi.com/?t=${title}`)
+			$http.get(`http://www.omdbapi.com/?s=${title}`)
 				.success(
 					response => {
 						console.log(response);
