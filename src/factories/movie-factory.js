@@ -14,7 +14,7 @@ const movieFactory = angular.module('app.movieFactory',[])
 			movie.isSaved = false;
 			_.remove($scope.saved, o => { return o.imdbID === movie.imdbID; });
 		}
-		localStorage.setItem('saved', JSON.stringify($scope.saved));
+		localStorage.setItem('saved', _.uniqBy(JSON.stringify($scope.saved),'imdbID'));
 	}
 
 	function listSaved($scope){

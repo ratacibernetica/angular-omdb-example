@@ -8,7 +8,7 @@ var host = process.env.HOST || 'localhost';
 module.exports = {
 	devtool: 'inline-source-map',
 	entry: [
-	'webpack-dev-server/client?//' + host + ':' + port,
+	'webpack-dev-server/client?http://' + host + ':' + port,
 		'webpack/hot/only-dev-server',
 		'bootstrap-loader',
 		'./src'
@@ -68,7 +68,7 @@ module.exports = {
 	devServer: {
 		hot: true,
 		proxy: {
-			'**':'//'+host+':'+nodeport
+			'**':'http://'+host+':'+nodeport
 		}
 	}
 }

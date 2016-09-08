@@ -14,6 +14,8 @@ services:
       - mcmongo
     depends_on:
       - mcmongo
+    volumes:
+      - .:/usr/src/app/
     environment:
       - MONGO_PORT_27017_TCP_ADDR=mcmongo
       - MONGO_PORT_27017_TCP_PORT=27017
