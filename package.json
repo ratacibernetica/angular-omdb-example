@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_PATH=$NODE_PATH:./src node server && npm start & webpack-dev-server --progress --colors",
+    "start": "NODE_PATH=$NODE_PATH:./src node server & webpack-dev-server --progress --colors --host $HOST",
     "dev": "npm start & webpack-dev-server --progress --colors",
     "test": "node ./node_modules/mocha/bin/mocha"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Martin Roldan Araujo <mroldan@webmonster.mx>",
+  "license": "MIT",
   "dependencies": {
     "angular": "^1.5.8",
     "angular-ui-router": "^0.3.1",

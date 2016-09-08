@@ -1,0 +1,25 @@
+version: '2.0'
+services:
+  mcmongo:
+    image: mongo
+    container_name: mcmongo
+
+  moviecrawler:
+    image: movie-crawler
+    container_name: moviecrawler
+    ports:
+      - "3000:3000"
+      - "8080:8080"
+    links:
+      - mcmongo
+    depends_on:
+      - mcmongo
+    environment:
+      - MONGO_PORT_27017_TCP_ADDR=mcmongo
+      - MONGO_PORT_27017_TCP_PORT=27017
+      - WEBPACK_PORT=8080
+      - PORT=3000
+      - HOST=0.0.0.0
+
+  
+

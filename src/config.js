@@ -19,11 +19,6 @@ app.config(($stateProvider, $urlRouterProvider, $locationProvider) => {
 			template: require('movies/list.html'),
 			controller: moviesController
 		})
-		.state('saved', {
-			url: "/movies",
-			template: require('movies/list.html'),
-			controller: moviesController
-		})
 		.state('movie', {
 			url: "/movie/:imdbID",
 			template: require('movies/detail.html'),

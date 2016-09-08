@@ -5,8 +5,6 @@ const movieFactory = angular.module('app.movieFactory',[])
 
 .factory('movieFactory', ($http) => {
 
-
-
 	function toggleSave($scope,movie){
 		_initSaved($scope);
 		if(!movie.isSaved){
@@ -27,7 +25,7 @@ const movieFactory = angular.module('app.movieFactory',[])
 	function _initSaved($scope){
 		var test = localStorage.getItem('saved');
 		try{
-			$scope.saved  = JSON.parse(test);
+			$scope.saved  = _.uniqBy(JSON.parse(test), 'imdbID');
 			if(!$scope.saved.length){
 				$scope.saved = [];
 			}

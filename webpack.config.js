@@ -1,18 +1,21 @@
 var webpack = require('webpack');
 var path = require('path');
 
+var port = process.env.WEBPACK_PORT || 8080;
+var nodeport = process.env.PORT || 3000;
+var host = process.env.HOST || 'localhost';
 
 module.exports = {
 	devtool: 'inline-source-map',
 	entry: [
-		'webpack-dev-server/client?http://localhost:8080/',
+	'webpack-dev-server/client?//' + host + ':' + port,
 		'webpack/hot/only-dev-server',
 		'bootstrap-loader',
 		'./src'
 	],
 	output: {
 		path: path.join(__dirname,'public'),
-		filename: 'bundle.js' 
+		filename: 'bundle.js',
 	},
 	resolve:{
 		modulesDirectories: ['node_modules','src'],
@@ -65,7 +68,7 @@ module.exports = {
 	devServer: {
 		hot: true,
 		proxy: {
-			'*':'http://localhost:3000'
+			'**':'//'+host+':'+nodeport
 		}
 	}
 }
