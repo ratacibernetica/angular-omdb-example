@@ -1,4 +1,6 @@
 # angular-omdb-example
+![alt text](https://codeship.com/projects/7399a790-5845-0134-cab2-7e9c42a73e5a/status?branch=master)
+
 A site where you can search, filter and fav movies. Made with MEAN Stack (MongoDB, Express, Angular and Node.JS)
 
 ## Features ##
